@@ -9,7 +9,6 @@
 #SBATCH --gpus=1
 #SBATCH --mem=50G
 
-#SBATCH --mail-user mhalice@emory.edu
 #SBATCH --mail-type BEGIN
 #SBATCH --mail-type END
 #SBATCH --mail-type FAIL

@@ -22,7 +22,7 @@ import glob
 ##### PARAMS
 print('######### PARAMETERS ########')
 print('Batch size')
-var_bs = 6 #<-batch size
+var_bs = 4 #<-batch size
 print(var_bs)
 ds_fctr = 1 #<-down sample factor (1=none, 2=half, etc)
 print('ds fctr')
@@ -30,7 +30,7 @@ print(ds_fctr)
 img_size = 512 #<x-y images size = 512/ds_fctr
 print('Img size')
 print(img_size)
-n_epochs = 1000
+n_epochs = 100#0
 
 
 print('######### Training Data ########')
@@ -40,7 +40,7 @@ print('######### Training Data ########')
 train = np.array([]).reshape(0,img_size,img_size,52)
 train_labels = np.array([]).reshape(0,img_size,img_size,52)
 
-for file in glob.glob('/users/mhalice/data/train_data/*.mat'):
+for file in glob.glob('/scratch/arezai/train/*.mat'):
     mat = scipy.io.loadmat(file)
     print(file)
     CT_seg = np.expand_dims(mat['CT_seg'],0)
@@ -72,12 +72,13 @@ print('######### VAL Data ########')
 val = np.array([]).reshape(0,img_size,img_size,52)
 val_labels = np.array([]).reshape(0,img_size,img_size,52)
 
-for file in os.listdir('/users/mhalice/data/val_data'):
-    mat = scipy.io.loadmat('/users/mhalice/data/val_data/'+file)
+for file in os.listdir('/scratch/arezai/test'):
+    mat = scipy.io.loadmat('/scratch/arezai/test/'+file)
     print(file)
     CT_seg = np.expand_dims(mat['CT_seg'],0)
     CT_vol = np.expand_dims(mat['CT_vol'],0)
     CT_vol = CT_vol.astype(np.float32)
+    print(np.shape(CT_vol))
     if np.shape(CT_vol)[3]>52:
         CT_seg = CT_seg[:,0:512:ds_fctr,0:512:ds_fctr,5:57]
         CT_vol = CT_vol[:,0:512:ds_fctr,0:512:ds_fctr,5:57]

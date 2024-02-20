@@ -22,7 +22,7 @@ import glob
 ##### PARAMS
 print('######### PARAMETERS ########')
 print('Batch size')
-var_bs = 4 #<-batch size
+var_bs = 1 #<-batch size, decreasing batch size to 1 for testing purposes
 print(var_bs)
 ds_fctr = 1 #<-down sample factor (1=none, 2=half, etc)
 print('ds fctr')

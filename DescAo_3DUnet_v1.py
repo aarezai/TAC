@@ -130,7 +130,7 @@ def bottleneck(x, filters, kernel_size=(3, 3,3), padding="same", strides=1):
 ######### MOdified for 3D U-Net
 #3D
 def UNet():
-    f = [2, 4, 6,1,8]
+    f = [1,1,1,1,1]#[2, 4, 6,1,8]
     print('\n Feature List:')
     print(f)
     inputs = tf.keras.layers.Input((img_size, img_size, max_z_dim,1 ))

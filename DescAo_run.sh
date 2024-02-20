@@ -1,13 +1,13 @@
 #!/bin/bash
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=16
+#SBATCH --cpus-per-task=32
 #SBATCH --time=12:00:00
 #SBATCH --job-name=descAo
 #SBATCH --output=%x_%j.out
-#SBATCH --partition=a10g-4-gm96-c48-m192
+#SBATCH --partition=a100-8-gm320-c96-m1152
 #SBATCH --gpus=1
-#SBATCH --mem=50G
+#SBATCH --mem=160G
 
 #SBATCH --mail-type BEGIN
 #SBATCH --mail-type END

@@ -37,7 +37,7 @@ print('######### Training Data ########')
 
 #Training data:
 
-max_z_dim = 98
+max_z_dim = 100
 
 train = np.array([]).reshape(0,img_size,img_size,max_z_dim)
 train_labels = np.array([]).reshape(0,img_size,img_size,max_z_dim)

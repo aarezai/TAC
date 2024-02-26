@@ -74,8 +74,8 @@ print('######### VAL Data ########')
 val = np.array([]).reshape(0,img_size,img_size,max_z_dim)
 val_labels = np.array([]).reshape(0,img_size,img_size,max_z_dim)
 
-for file in os.listdir('/scratch/arezai/test'):
-    mat = scipy.io.loadmat('/scratch/arezai/test/'+file)
+for file in os.listdir('/scratch/arezai/val'):
+    mat = scipy.io.loadmat('/scratch/arezai/val/'+file)
     print(file)
     CT_seg = np.expand_dims(mat['CT_seg'],0)
     CT_vol = np.expand_dims(mat['CT_vol'],0)

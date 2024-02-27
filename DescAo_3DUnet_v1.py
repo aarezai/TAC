@@ -22,7 +22,7 @@ import glob
 ##### PARAMS
 print('######### PARAMETERS ########')
 print('Batch size')
-var_bs = 4 #<-batch size
+var_bs = 1 #<-batch size, decreasing batch size to 1 for testing purposes
 print(var_bs)
 ds_fctr = 1 #<-down sample factor (1=none, 2=half, etc)
 print('ds fctr')
@@ -37,8 +37,10 @@ print('######### Training Data ########')
 
 #Training data:
 
-train = np.array([]).reshape(0,img_size,img_size,52)
-train_labels = np.array([]).reshape(0,img_size,img_size,52)
+max_z_dim = 100
+
+train = np.array([]).reshape(0,img_size,img_size,max_z_dim)
+train_labels = np.array([]).reshape(0,img_size,img_size,max_z_dim)
 
 for file in glob.glob('/scratch/arezai/train/*.mat'):
     mat = scipy.io.loadmat(file)
@@ -46,14 +48,14 @@ for file in glob.glob('/scratch/arezai/train/*.mat'):
     CT_seg = np.expand_dims(mat['CT_seg'],0)
     CT_vol = np.expand_dims(mat['CT_vol'],0)
     CT_vol = CT_vol.astype(np.float32)
-    if np.shape(CT_vol)[3]>52:
+    if np.shape(CT_vol)[3]>max_z_dim:
         CT_seg = CT_seg[:,0:512:ds_fctr,0:512:ds_fctr,5:57]
         CT_vol = CT_vol[:,0:512:ds_fctr,0:512:ds_fctr,5:57]
-    elif np.shape(CT_vol)[3]<52:
+    elif np.shape(CT_vol)[3]<max_z_dim:
         print(np.shape(CT_seg))
         print(np.shape(CT_vol))
-        CT_seg = np.pad(CT_seg[:,0:512:ds_fctr,0:512:ds_fctr,:],((0,0),(0,0),(0,0),(0,52-np.shape(CT_vol)[3])))
-        CT_vol = np.pad(CT_vol[:,0:512:ds_fctr,0:512:ds_fctr,:],((0,0),(0,0),(0,0),(0,52-np.shape(CT_vol)[3])))
+        CT_seg = np.pad(CT_seg[:,0:512:ds_fctr,0:512:ds_fctr,:],((0,0),(0,0),(0,0),(0,max_z_dim-np.shape(CT_vol)[3])))
+        CT_vol = np.pad(CT_vol[:,0:512:ds_fctr,0:512:ds_fctr,:],((0,0),(0,0),(0,0),(0,max_z_dim-np.shape(CT_vol)[3])))
         print(np.shape(CT_seg))
         print(np.shape(CT_vol))
     else:
@@ -69,24 +71,24 @@ print(np.shape(train_labels))
 print('######### VAL Data ########')
 
 # VALIDATION
-val = np.array([]).reshape(0,img_size,img_size,52)
-val_labels = np.array([]).reshape(0,img_size,img_size,52)
+val = np.array([]).reshape(0,img_size,img_size,max_z_dim)
+val_labels = np.array([]).reshape(0,img_size,img_size,max_z_dim)
 
-for file in os.listdir('/scratch/arezai/test'):
-    mat = scipy.io.loadmat('/scratch/arezai/test/'+file)
+for file in os.listdir('/scratch/arezai/val'):
+    mat = scipy.io.loadmat('/scratch/arezai/val/'+file)
     print(file)
     CT_seg = np.expand_dims(mat['CT_seg'],0)
     CT_vol = np.expand_dims(mat['CT_vol'],0)
     CT_vol = CT_vol.astype(np.float32)
     print(np.shape(CT_vol))
-    if np.shape(CT_vol)[3]>52:
+    if np.shape(CT_vol)[3]>max_z_dim:
         CT_seg = CT_seg[:,0:512:ds_fctr,0:512:ds_fctr,5:57]
         CT_vol = CT_vol[:,0:512:ds_fctr,0:512:ds_fctr,5:57]
-    elif np.shape(CT_vol)[3]<52:
+    elif np.shape(CT_vol)[3]<max_z_dim:
         print(np.shape(CT_seg))
         print(np.shape(CT_vol))
-        CT_seg = np.pad(CT_seg[:,0:512:ds_fctr,0:512:ds_fctr,:],((0,0),(0,0),(0,0),(0,52-np.shape(CT_vol)[3])))
-        CT_vol = np.pad(CT_vol[:,0:512:ds_fctr,0:512:ds_fctr,:],((0,0),(0,0),(0,0),(0,52-np.shape(CT_vol)[3])))
+        CT_seg = np.pad(CT_seg[:,0:512:ds_fctr,0:512:ds_fctr,:],((0,0),(0,0),(0,0),(0,max_z_dim-np.shape(CT_vol)[3])))
+        CT_vol = np.pad(CT_vol[:,0:512:ds_fctr,0:512:ds_fctr,:],((0,0),(0,0),(0,0),(0,max_z_dim-np.shape(CT_vol)[3])))
         print(np.shape(CT_seg))
         print(np.shape(CT_vol))
     else:
@@ -128,10 +130,10 @@ def bottleneck(x, filters, kernel_size=(3, 3,3), padding="same", strides=1):
 ######### MOdified for 3D U-Net
 #3D
 def UNet():
-    f = [2, 4, 6,1,8]
+    f = [1,1,1,1,1]#[2, 4, 6,1,8]
     print('\n Feature List:')
     print(f)
-    inputs = tf.keras.layers.Input((img_size, img_size, 52,1 ))
+    inputs = tf.keras.layers.Input((img_size, img_size, max_z_dim,1 ))
     
     p0 = inputs
     c1, p1 = down_block(p0, f[0],2) #512 -> 256

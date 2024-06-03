@@ -203,7 +203,7 @@ hypermodel.fit(hp, model, train, train_labels.astype(np.float32),validation_data
 hp = keras_tuner.HyperParameters()
 tuner = keras_tuner.BayesianOptimization(
     hypermodel=MyHyperModel(), # Instance of HyperModel class
-    objective="val_accuracy", # objective function
+    objective="loss", # objective function
     max_trials=2, # number of model configurations to test, default=10
     overwrite=True,
     directory='/users/arezai/code/TAC/Models',

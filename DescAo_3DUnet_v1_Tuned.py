@@ -36,6 +36,7 @@ print('Img size')
 print(img_size)
 n_epochs = 2#50#0
 
+outputDirectory = '/users/arezai/code/TAC/Models'
 
 print('######### Training Data ########')
 
@@ -206,7 +207,7 @@ tuner = keras_tuner.BayesianOptimization(
     objective="loss", # objective function
     max_trials=2, # number of model configurations to test, default=10
     overwrite=True,
-    directory='/users/arezai/code/TAC/Models',
+    directory=outputDirectory,
     project_name='tune_hypermodel'
 )
 
@@ -214,7 +215,12 @@ tuner = keras_tuner.BayesianOptimization(
 tuner.search(train, train_labels.astype(np.float32), validation_data=(val,val_labels),epochs = n_epochs)
 
 print(tuner.results_summary())
-
+'''
+# Show the best model
+best_models = tuner.get_best_models(num_models=2)
+best_model = best_models[0]
+print(best_model.summary())
+'''
 # Retrain the best model
 hypermodel = MyHyperModel()
 best_hp = tuner.get_best_hyperparameters()[0]
@@ -222,7 +228,7 @@ model = hypermodel.build(best_hp)
 hypermodel.fit(hp, model, train, train_labels.astype(np.float32),validation_data=(val,val_labels), epochs = n_epochs)
 
 # Save final model
-hypermodel.save_weights("UNetW_DescAo_v1_bs"+str(img_size)+'_'+".h5")
+model.save_weights(outputDirectory + "/UNetW_DescAo_v1_bs"+str(img_size)+'_'+".h5")
 
 
 '''
